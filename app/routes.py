@@ -4,4 +4,14 @@ from app import vapp
 @vapp.route('/index')
 def index():
     user = {'username' : 'Antonio'}
-    return render_template('index.html', title = 'Home', user = user)
+    posts = [
+        {
+            'author': {'username': 'Henrique'},
+            'body': 'Beautiful day in Brazil!'
+        },
+        {
+            'author': {'username': 'Clara'},
+            'body': 'The Avengers movie was so cool!'
+        }
+    ]
+    return render_template('index.html', title='Home', user=user, posts=posts)
