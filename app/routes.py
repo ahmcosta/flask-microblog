@@ -1,6 +1,7 @@
+from flask import render_template
 from app import vapp
-
-@vapp.route('/') # Python decorator
-@vapp.route('/index') # Python decorator
-def index(): # This function is modified by the previous decorators
-    return "Hello, world!"
+@vapp.route('/')
+@vapp.route('/index')
+def index():
+    user = {'username' : 'Antonio'}
+    return render_template('index.html', title = 'Home', user = user)
