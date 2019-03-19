@@ -11,6 +11,8 @@ vapp = Flask(__name__)
 vapp.config.from_object(Config)
 db = SQLAlchemy(vapp)  # db is the object that represents the database
 migrate = Migrate(vapp, db)  # db is the object that represents the database
+login = LoginManager(vapp)
+login.login_view = 'login'
 
 # routes modules is imported at the bottom (NOT at the top)
 # It avoids circular imports, a commom problem with Flask applications
