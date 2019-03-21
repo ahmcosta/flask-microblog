@@ -16,4 +16,4 @@ login.login_view = 'login'
 
 # routes modules is imported at the bottom (NOT at the top)
 # It avoids circular imports, a commom problem with Flask applications
-from app import routes, models  # isort:skiped
+from app import routes, models, errors  # isort:skiped
