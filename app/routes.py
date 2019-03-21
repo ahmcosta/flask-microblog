@@ -11,13 +11,20 @@ from app.forms import EditProfileForm, LoginForm, RegistrationForm
 from app.models import User
 
 
+@vapp.before_request
+def before_request():
+    if current_user.is_authenticated:
+        current_user.last_seen = datetime.utcnow()
+        db.session.commit()
+
+
 @vapp.route('/')
 @vapp.route('/index')
+@login_required
 def index():
-    user = {'username' : 'Antonio'}
     posts = [
         {
-            'author': {'username': 'Henrique'},
+            'author': {'username': 'Antonio'},
             'body': 'Beautiful day in Brazil!'
         },
         {
@@ -25,7 +32,7 @@ def index():
             'body': 'The Avengers movie was so cool!'
         }
     ]
-    return render_template('index.html', title='Home', user=user, posts=posts)
+    return render_template('index.html', title='Home', posts=posts)
 
 
 @vapp.route('/login', methods=['GET', 'POST'])
@@ -87,25 +94,18 @@ def user(username):
         })
     return render_template('user.html', user=user, posts=posts)
 
-@vapp.before_request # executed right before the view function
-def before_request():
-    if current_user.is_authenticated:
-        current_user.last_seen = datetime.utcnow()
-
-        # It's not necessary, because when current_user is
-        # referenced, Flask-login will invoke the user
-        # loader callback function
-        # db.session.add() # <<<
-        db.session.commit()
-
 
 @vapp.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
-    form = EditProfileForm()
+    form = EditProfileForm(current_user.username)
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
+        # It's not necessary, because when current_user is
+        # referenced, Flask-login will invoke the user
+        # loader callback function
+        # db.session.add() # <<<
         db.session.commit()
         flash('Your changes have been saved.')
         return redirect(url_for('edit_profile'))
